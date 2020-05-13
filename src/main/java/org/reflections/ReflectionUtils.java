@@ -16,10 +16,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
 
 import static org.reflections.util.Utils.filter;
 
@@ -200,7 +201,7 @@ public abstract class ReflectionUtils {
             if (input != null) {
                 Annotation[] inputAnnotations = input.getAnnotations();
                 if (inputAnnotations.length == annotations.length) {
-                    return IntStream.range(0, inputAnnotations.length)
+                    return IntStreams.range(0, inputAnnotations.length)
                             .allMatch(i -> areAnnotationMembersMatching(inputAnnotations[i], annotations[i]));
                 }
             }
@@ -329,7 +330,7 @@ public abstract class ReflectionUtils {
 
     /** try to resolve all given string representation of types to a list of java types */
     public static <T> Set<Class<? extends T>> forNames(final Collection<String> classes, ClassLoader... classLoaders) {
-        return classes.stream()
+        return StreamSupport.stream(classes)
                 .map(className -> (Class<? extends T>) forName(className, classLoaders))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -345,11 +346,13 @@ public abstract class ReflectionUtils {
         Annotation[][] annotations =
                 member instanceof Method ? ((Method) member).getParameterAnnotations() :
                 member instanceof Constructor ? ((Constructor) member).getParameterAnnotations() : null;
-        return Arrays.stream(annotations).flatMap(Arrays::stream).collect(Collectors.toSet());
+		return StreamSupport.stream(Arrays.asList(annotations))
+				.flatMap(ann -> StreamSupport.stream(Arrays.asList(ann)))
+				.collect(Collectors.toSet());
     }
 
     private static Set<Class<? extends Annotation>> annotationTypes(Collection<Annotation> annotations) {
-        return annotations.stream().map(Annotation::annotationType).collect(Collectors.toSet());
+        return StreamSupport.stream(annotations).map(Annotation::annotationType).collect(Collectors.toSet());
     }
 
     private static Class<? extends Annotation>[] annotationTypes(Annotation[] annotations) {
@@ -396,7 +399,7 @@ public abstract class ReflectionUtils {
         if (childClasses.length != parentClasses.length) {
             return false;
         }
-        return IntStream.range(0, childClasses.length)
+        return IntStreams.range(0, childClasses.length)
                 .noneMatch(i -> !parentClasses[i].isAssignableFrom(childClasses[i]) ||
                         parentClasses[i] == Object.class && childClasses[i] != Object.class);
     }

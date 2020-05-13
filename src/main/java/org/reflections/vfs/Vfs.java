@@ -16,11 +16,12 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.jar.JarFile;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java8.util.Spliterators;
+import java8.util.stream.StreamSupport;
 
 /**
  * a simple virtual file system bridge
@@ -139,15 +140,15 @@ public abstract class Vfs {
 
     /** return an iterable of all {@link org.reflections.vfs.Vfs.File} in given urls, matching filePredicate */
     public static Iterable<File> findFiles(final Collection<URL> urls, final Predicate<File> filePredicate) {
-        return () -> urls.stream()
+        return () -> StreamSupport.stream(urls)
                 .flatMap(url -> {
                     try {
-                        return StreamSupport.stream(fromURL(url).getFiles().spliterator(), false);
+                        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(fromURL(url).getFiles().iterator(), 0), false);
                     } catch (Throwable e) {
                         if (Reflections.log != null) {
                             Reflections.log.error("could not findFiles for url. continuing. [" + url + "]", e);
                         }
-                        return Stream.of();
+                        return StreamSupport.stream(Collections.<File>emptyList());
                     }
                 })
                 .filter(filePredicate).iterator();

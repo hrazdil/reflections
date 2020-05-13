@@ -23,8 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java8.util.function.Predicate;
 
 /**
  * a fluent builder for {@link org.reflections.Configuration}, to be used for constructing a {@link org.reflections.Reflections} instance
@@ -305,9 +304,14 @@ public class ConfigurationBuilder implements Configuration {
 
     /** add class loader, might be used for resolving methods/fields */
     public ConfigurationBuilder addClassLoaders(ClassLoader... classLoaders) {
-        this.classLoaders = this.classLoaders == null
-                            ? classLoaders
-                            : Stream.concat(Arrays.stream(this.classLoaders), Arrays.stream(classLoaders)).toArray(ClassLoader[]::new);
+		if (this.classLoaders == null) {
+			this.classLoaders = classLoaders;
+		} else {
+			final List<ClassLoader> lst = new ArrayList<>(this.classLoaders.length + classLoaders.length);
+			lst.addAll(Arrays.asList(this.classLoaders));
+			lst.addAll(Arrays.asList(classLoaders));
+			this.classLoaders = lst.toArray(new ClassLoader[lst.size()]);
+		}
         return this;
     }
 

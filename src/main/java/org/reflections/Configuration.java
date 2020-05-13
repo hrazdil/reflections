@@ -7,7 +7,7 @@ import org.reflections.serializers.Serializer;
 import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 
 /**
  * Configuration is used to create a configured instance of {@link Reflections}

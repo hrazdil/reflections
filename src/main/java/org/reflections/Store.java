@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java8.util.Maps;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 import static org.reflections.util.Utils.index;
 
@@ -29,7 +31,7 @@ public class Store {
         storeMap = new ConcurrentHashMap<>();
         for (Scanner scanner : configuration.getScanners()) {
             String index = index(scanner.getClass());
-            storeMap.computeIfAbsent(index, s -> new ConcurrentHashMap<>());
+			Maps.computeIfAbsent(storeMap, index, s -> new ConcurrentHashMap<>());
         }
     }
 
@@ -111,7 +113,7 @@ public class Store {
 
     public Set<String> values(String index) {
         Map<String, Collection<String>> map = storeMap.get(index);
-        return map != null ? map.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()) : Collections.emptySet();
+        return map != null ? StreamSupport.stream(map.values()).flatMap(StreamSupport::stream).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     //
@@ -120,9 +122,10 @@ public class Store {
     }
 
     public boolean put(String index, String key, String value) {
-        return storeMap.computeIfAbsent(index, s -> new ConcurrentHashMap<>())
-                .computeIfAbsent(key, s -> Collections.synchronizedList(new ArrayList<>()))
-                .add(value);
+        return Maps.computeIfAbsent(
+				Maps.computeIfAbsent(storeMap, index, s -> new ConcurrentHashMap<>()),
+				key, s -> Collections.synchronizedList(new ArrayList<>())
+		).add(value);
     }
 
     void merge(Store store) {

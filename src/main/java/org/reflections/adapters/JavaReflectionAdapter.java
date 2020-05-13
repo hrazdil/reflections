@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 import static org.reflections.ReflectionUtils.forName;
 import static org.reflections.util.Utils.join;
@@ -41,7 +42,7 @@ public class JavaReflectionAdapter implements MetadataAdapter<Class, Field, Memb
         Class<?>[] parameterTypes = member instanceof Method ? ((Method) member).getParameterTypes() :
                 member instanceof Constructor ? ((Constructor) member).getParameterTypes() : null;
 
-        return parameterTypes != null ? Arrays.stream(parameterTypes).map(JavaReflectionAdapter::getName).collect(Collectors.toList()) : Collections.emptyList();
+        return parameterTypes != null ? StreamSupport.stream(Arrays.asList(parameterTypes)).map(JavaReflectionAdapter::getName).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     public List<String> getClassAnnotationNames(Class aClass) {
@@ -115,7 +116,7 @@ public class JavaReflectionAdapter implements MetadataAdapter<Class, Field, Memb
 
     public List<String> getInterfacesNames(Class cls) {
         Class[] classes = cls.getInterfaces();
-        return classes != null ? Arrays.stream(classes).map(Class::getName).collect(Collectors.toList()) : Collections.emptyList();
+        return classes != null ? StreamSupport.stream(Arrays.asList(classes)).map(Class::getName).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     public boolean acceptsInput(String file) {
@@ -124,7 +125,7 @@ public class JavaReflectionAdapter implements MetadataAdapter<Class, Field, Memb
     
     //
     private List<String> getAnnotationNames(Annotation[] annotations) {
-        return Arrays.stream(annotations).map(annotation -> annotation.annotationType().getName()).collect(Collectors.toList());
+        return StreamSupport.stream(Arrays.asList(annotations)).map(annotation -> annotation.annotationType().getName()).collect(Collectors.toList());
     }
 
     public static String getName(Class type) {

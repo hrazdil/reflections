@@ -9,7 +9,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import java.util.Collections;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.reflections.TestModel.*;

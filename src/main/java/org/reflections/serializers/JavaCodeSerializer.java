@@ -20,8 +20,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Set;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 import static org.reflections.Reflections.log;
 import static org.reflections.util.Utils.*;
@@ -157,8 +158,8 @@ public class JavaCodeSerializer implements Serializer {
             List<String> fields = new ArrayList<>();
             List<String> methods = new ArrayList<>();
 
-            Iterable<String> members = reflections.getStore().get(index(TypeElementsScanner.class), fqn);
-            List<String> sorted = StreamSupport.stream(members.spliterator(), false).sorted().collect(Collectors.toList());
+			Set<String> members = reflections.getStore().get(index(TypeElementsScanner.class), fqn);
+            List<String> sorted = StreamSupport.stream(members).sorted().collect(Collectors.toList());
             for (String element : sorted) {
                 if (element.startsWith("@")) {
                     annotations.add(element.substring(1));

@@ -27,9 +27,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 import static org.junit.Assert.*;
 import static org.reflections.TestModel.*;
@@ -356,6 +357,6 @@ public class ReflectionsTest {
     }
 
     private List<Class<? extends Annotation>> annotationTypes(Collection<Annotation> annotations) {
-        return annotations.stream().filter(Objects::nonNull).map(Annotation::annotationType).collect(Collectors.toList());
+        return StreamSupport.stream(annotations).filter(Objects::nonNull).map(Annotation::annotationType).collect(Collectors.toList());
     }
 }

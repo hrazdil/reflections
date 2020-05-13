@@ -17,9 +17,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java8.util.function.Predicate;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
 
 import static org.reflections.ReflectionUtils.forName;
 
@@ -29,7 +30,7 @@ import static org.reflections.ReflectionUtils.forName;
 public abstract class Utils {
 
     public static String repeat(String string, int times) {
-        return IntStream.range(0, times).mapToObj(i -> string).collect(Collectors.joining());
+        return IntStreams.range(0, times).mapToObj(i -> string).collect(Collectors.joining());
     }
 
     /**
@@ -167,7 +168,7 @@ public abstract class Utils {
 
 
     public static List<String> names(Collection<Class<?>> types) {
-        return types.stream().map(Utils::name).collect(Collectors.toList());
+        return StreamSupport.stream(types).map(Utils::name).collect(Collectors.toList());
     }
 
     public static List<String> names(Class<?>... types) {
@@ -189,22 +190,22 @@ public abstract class Utils {
     public static String index(Class<?> scannerClass) { return scannerClass.getSimpleName(); }
 
     public static <T> Predicate<T> and(Predicate... predicates) {
-        return Arrays.stream(predicates).reduce(t -> true, Predicate::and);
+        return StreamSupport.stream(Arrays.asList(predicates)).reduce(t -> true, (a, b) -> p -> a.test(p) && b.test(p));
     }
 
     public static String join(Collection<?> elements, String delimiter) {
-        return elements.stream().map(Object::toString).collect(Collectors.joining(delimiter));
+        return StreamSupport.stream(elements).map(Object::toString).collect(Collectors.joining(delimiter));
     }
 
     public static <T> Set<T> filter(Collection<T> result, Predicate<? super T>... predicates) {
-        return result.stream().filter(and(predicates)).collect(Collectors.toSet());
+        return StreamSupport.stream(result).filter(and(predicates)).collect(Collectors.toSet());
     }
 
     public static <T> Set<T> filter(Collection<T> result, Predicate<? super T> predicate) {
-        return result.stream().filter(predicate).collect(Collectors.toSet());
+        return StreamSupport.stream(result).filter(predicate).collect(Collectors.toSet());
     }
 
     public static <T> Set<T> filter(T[] result, Predicate<? super T>... predicates) {
-        return Arrays.stream(result).filter(and(predicates)).collect(Collectors.toSet());
+        return StreamSupport.stream(Arrays.asList(result)).filter(and(predicates)).collect(Collectors.toSet());
     }
 }

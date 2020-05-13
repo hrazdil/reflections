@@ -21,8 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
 
 import static javassist.bytecode.AccessFlag.isPrivate;
 import static javassist.bytecode.AccessFlag.isProtected;
@@ -156,9 +157,9 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
     //
     private List<String> getAnnotationNames(final AnnotationsAttribute... annotationsAttributes) {
         if (annotationsAttributes != null) {
-            return Arrays.stream(annotationsAttributes)
+            return StreamSupport.stream(Arrays.asList(annotationsAttributes))
                     .filter(Objects::nonNull)
-                    .flatMap(annotationsAttribute -> Arrays.stream(annotationsAttribute.getAnnotations()))
+                    .flatMap(annotationsAttribute -> StreamSupport.stream(Arrays.asList(annotationsAttribute.getAnnotations())))
                     .map(Annotation::getTypeName)
                     .collect(Collectors.toList());
         } else {
@@ -167,7 +168,7 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
     }
 
     private List<String> getAnnotationNames(final Annotation[] annotations) {
-        return Arrays.stream(annotations).map(Annotation::getTypeName).collect(Collectors.toList());
+        return StreamSupport.stream(Arrays.asList(annotations)).map(Annotation::getTypeName).collect(Collectors.toList());
     }
 
     private List<String> splitDescriptorToTypeNames(final String descriptors) {
@@ -182,7 +183,7 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
             }
             indices.add(descriptors.length());
 
-            result = IntStream.range(0, indices.size() - 1)
+            result = IntStreams.range(0, indices.size() - 1)
                     .mapToObj(i -> Descriptor.toString(descriptors.substring(indices.get(i), indices.get(i + 1))))
                     .collect(Collectors.toList());
 

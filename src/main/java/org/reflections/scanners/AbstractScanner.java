@@ -7,7 +7,7 @@ import org.reflections.adapters.MetadataAdapter;
 import org.reflections.util.Utils;
 import org.reflections.vfs.Vfs;
 
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 
 /**
  *

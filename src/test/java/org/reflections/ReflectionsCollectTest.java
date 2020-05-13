@@ -16,7 +16,7 @@ import org.reflections.util.FilterBuilder;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertThat;

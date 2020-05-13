@@ -41,11 +41,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java8.util.stream.Collectors;
 
 import static java.lang.String.format;
+import java8.util.stream.StreamSupport;
 import static org.reflections.ReflectionUtils.*;
 import static org.reflections.util.Utils.*;
 
@@ -550,7 +551,7 @@ public class Reflections {
      * <p/>depends on FieldAnnotationsScanner configured
      */
     public Set<Field> getFieldsAnnotatedWith(final Class<? extends Annotation> annotation) {
-        return store.get(FieldAnnotationsScanner.class, annotation.getName()).stream()
+        return StreamSupport.stream(store.get(FieldAnnotationsScanner.class, annotation.getName()))
                 .map(annotated -> getFieldFromString(annotated, loaders()))
                 .collect(Collectors.toSet());
     }

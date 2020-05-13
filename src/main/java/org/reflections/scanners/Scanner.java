@@ -4,7 +4,7 @@ import org.reflections.Configuration;
 import org.reflections.Store;
 import org.reflections.vfs.Vfs;
 
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 
 /**
  *

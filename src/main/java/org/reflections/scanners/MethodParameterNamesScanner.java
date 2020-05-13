@@ -7,8 +7,8 @@ import org.reflections.Store;
 import org.reflections.adapters.MetadataAdapter;
 
 import java.lang.reflect.Modifier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java8.util.stream.Collectors;
+import java8.util.stream.IntStreams;
 
 /** scans methods/constructors and indexes parameter names */
 @SuppressWarnings("unchecked")
@@ -26,7 +26,7 @@ public class MethodParameterNamesScanner extends AbstractScanner {
                 int length = md.getParameterNames(method).size();
                 if (length > 0) {
                     int shift = Modifier.isStatic(((MethodInfo) method).getAccessFlags()) ? 0 : 1; //skip this
-                    String join = IntStream.range(shift, length + shift)
+                    String join = IntStreams.range(shift, length + shift)
                             .mapToObj(i -> ((MethodInfo) method).getConstPool().getUtf8Info(table.nameIndex(i)))
                             .filter(name -> !name.startsWith("this$"))
                             .collect(Collectors.joining(", "));

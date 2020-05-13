@@ -5,7 +5,7 @@ import org.reflections.ReflectionsException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
+import java8.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
